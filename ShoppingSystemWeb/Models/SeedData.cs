@@ -11,9 +11,11 @@ namespace ShoppingSystemWeb.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<ShoppingSystemWebContext>>()))
             {
+                context.Database.EnsureCreated();
+
                 if (context.Product.Any())
                 {
-                    return;  
+                    return;
                 }
 
                 context.Product.AddRange(
