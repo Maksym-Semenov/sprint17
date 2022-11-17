@@ -55,7 +55,7 @@ namespace NUnit_ShoppingTests
             Assert.IsInstanceOf<ViewResult>(result.Result);
         }
         #endregion
-        
+
         #region testing CRUD
         [Test]
         [TestCase(5, "Milk", "2022-06-01", "Milk food", "25.20")]
@@ -73,6 +73,37 @@ namespace NUnit_ShoppingTests
             _shoppingSystemWebContextMock.Add(product);
             _shoppingSystemWebContextMock.SaveChanges();
             Assert.That(product, Is.EqualTo(_shoppingSystemWebContextMock.Product.Where(product => product.Id == id).First()));
+        }
+
+        [Test]
+        [TestCase(2)]
+        public void Test_Read_Product_From_Database(int id)
+        {
+            var product = _shoppingSystemWebContextMock.Product.Find(id);
+            _shoppingSystemWebContextMock.SaveChanges();
+            Assert.That(product, Is.EqualTo(_shoppingSystemWebContextMock.Product.Where(product => product.Id == id).First()));
+        }
+
+        [Test]
+        [TestCase(1)]
+        public void Test_Update_Product_In_Database(int id)
+        {
+            var product = _shoppingSystemWebContextMock.Product.Find(id);
+            product.Title = "New Title";
+            _shoppingSystemWebContextMock.SaveChanges();
+            Assert.That(product.Title, Is.EqualTo(_shoppingSystemWebContextMock.Product.Where(product => product.Id == id).First().Title));
+        }
+
+        [Test]
+        [TestCase(1)]
+        public void Test_Delete_Product_From_Database(int id)
+        {
+            var product = _shoppingSystemWebContextMock.Product.Find(id);
+            _shoppingSystemWebContextMock.Remove(product);
+            _shoppingSystemWebContextMock.SaveChanges();
+
+            var result = _shoppingSystemWebContextMock.Product.Where(product => product.Id == id).FirstOrDefault();
+            Assert.That(result, Is.EqualTo(null));
         }
         #endregion
     }
