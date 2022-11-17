@@ -14,7 +14,7 @@ namespace ShoppingSystemWeb.Models
                 context.Database.EnsureCreated();
                 if (context.Product.Any())
                 {
-                    return;  
+                    return;
                 }
 
                 context.Product.AddRange(

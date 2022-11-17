@@ -15,6 +15,6 @@ namespace ShoppingSystemWeb.Data
         {
         }
 
-        public DbSet<ShoppingSystemWeb.Models.Product> Product { get; set; }
+        public DbSet<Product> Product { get; set; }
     }
 }
