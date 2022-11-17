@@ -76,12 +76,40 @@ namespace NUnit_ShoppingTests
         }
 
         [Test]
+        [TestCase(1, "Milk", "2022-06-01", "Milk food", "25.20")]
+        public void Test_Add_Existing_Product_To_Database(int id, string title, DateTime expiredDate, string category, decimal price)
+        {
+            var product = new Product()
+            {
+                Id = id,
+                Title = title,
+                ExpiredDate = expiredDate,
+                Category = category,
+                Price = price
+            };
+
+            Assert.Throws<InvalidOperationException>(() =>
+            {
+                _shoppingSystemWebContextMock.Add(product);
+            });
+        }
+
+        [Test]
         [TestCase(2)]
         public void Test_Read_Product_From_Database(int id)
         {
             var product = _shoppingSystemWebContextMock.Product.Find(id);
             _shoppingSystemWebContextMock.SaveChanges();
             Assert.That(product, Is.EqualTo(_shoppingSystemWebContextMock.Product.Where(product => product.Id == id).First()));
+        }
+
+        [Test]
+        [TestCase(99)]
+        public void Test_Read_Non_Existing_Product_From_Database(int id)
+        {
+            var product = _shoppingSystemWebContextMock.Product.Find(id);
+            _shoppingSystemWebContextMock.SaveChanges();
+            Assert.That(product, Is.EqualTo(null));
         }
 
         [Test]
@@ -95,6 +123,17 @@ namespace NUnit_ShoppingTests
         }
 
         [Test]
+        [TestCase(99)]
+        public void Test_Update_Non_Existing_Product_In_Database(int id)
+        {
+            var product = _shoppingSystemWebContextMock.Product.Find(id);
+            Assert.Throws<NullReferenceException>(() =>
+            {
+                product.Title = "New Title";
+            });
+        }
+
+        [Test]
         [TestCase(1)]
         public void Test_Delete_Product_From_Database(int id)
         {
@@ -104,6 +143,17 @@ namespace NUnit_ShoppingTests
 
             var result = _shoppingSystemWebContextMock.Product.Where(product => product.Id == id).FirstOrDefault();
             Assert.That(result, Is.EqualTo(null));
+        }
+
+        [Test]
+        [TestCase(99)]
+        public void Test_Delete_Non_Existing_Product_From_Database(int id)
+        {
+            var product = _shoppingSystemWebContextMock.Product.Find(id);
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                _shoppingSystemWebContextMock.Remove(product);
+            });
         }
         #endregion
     }
